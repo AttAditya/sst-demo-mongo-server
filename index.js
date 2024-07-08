@@ -1,11 +1,15 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 
+const postwoman = require("./postwoman");
+
 const app = express();
 app.use(express.json());
+app.use("/postwoman", postwoman);
 
-const mongoPass = "GYHwFM9LEQTUZwko";
-const mongoURI = `mongodb+srv://attachmentaditya:${mongoPass}@cluster0.khodonw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const mongoURI = process.env.MONGO_URI
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -72,16 +76,19 @@ app.post("/api/products", async (req, res) => {
 app.put("/api/products/:id", async (req, res) => {
     const id = req.params.id;
     const body = req.body;
-    const product = await productModel.findByIdAndUpdate(id, {
+    
+    await productModel.findByIdAndUpdate(id, {
         name: body.name,
         price: body.price,
         isInStock: body.isInStock,
         category: body.category
     });
 
+    const updatedProduct = await productModel.findById(id);
+
     return res.json({
         message: "Product Updated",
-        product: product
+        product: updatedProduct
     });
 });
 
