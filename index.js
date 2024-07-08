@@ -42,10 +42,6 @@ const productSchema = new mongoose.Schema({
 
 const productModel = mongoose.model("Products", productSchema);
 
-app.get("/postman", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
-});
-
 app.get("/api/products", async (req, res) => {
     const products = await productModel.find();
     return res.json(products);
